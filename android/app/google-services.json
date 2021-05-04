@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "752074671249",
+    "project_id": "readspace-36618",
+    "storage_bucket": "readspace-36618.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:752074671249:android:3ebafd74cf9c22e3daab30",
+        "android_client_info": {
+          "package_name": "com.readspace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "752074671249-5dh4cnc0hmd9g58qbcg7abm7cusdngki.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.readspace",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "752074671249-r2lnn7rg7ntt1s1shttbcjeqff27eqok.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2ZIw9PJ1OIFTPvGS9h2k8kjhduUZVEJk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "752074671249-r2lnn7rg7ntt1s1shttbcjeqff27eqok.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "752074671249-ji0fji8obd078ejlm345nq9c99bvl4of.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.ReadSpace"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
