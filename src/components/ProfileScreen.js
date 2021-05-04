@@ -69,6 +69,12 @@ class ProfileScreen extends Component {
       .then(() => Alert.alert('Log Out Login again'));
   };
   signOut = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+    } catch (error) {
+      console.error(error);
+    }
     this.logOut();
     const data = null;
     this.props.LoginUser(data);

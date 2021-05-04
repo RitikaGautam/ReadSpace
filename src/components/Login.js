@@ -18,6 +18,7 @@ const windowHeight = Dimensions.get('window').height;
 import {
   GoogleSignin,
   statusCodes,
+  GoogleSigninButton,
 } from '@react-native-google-signin/google-signin';
 import Icons from 'react-native-vector-icons/AntDesign';
 import TwitterIcons from 'react-native-vector-icons/Entypo';
@@ -44,8 +45,10 @@ class Login extends Component {
       webClientId:
         '752074671249-r2lnn7rg7ntt1s1shttbcjeqff27eqok.apps.googleusercontent.com',
     });
+    if (this.props.loginData) {
+      this.getCurrentUserInfo();
+    }
 
-    this.getCurrentUserInfo();
     this.coverpage();
   }
   coverpage = () => {
@@ -154,14 +157,20 @@ class Login extends Component {
           <View style={styles.bottomContainer}>
             <Text style={styles.bottomtxt}>Login With</Text>
             <View style={styles.iconsContainer}>
-              <TouchableOpacity onPress={this.signIn}>
+              {/* <TouchableOpacity onPress={this.signIn}>
                 <Icons
                   style={styles.icons}
                   name={'googleplus'}
                   size={60}
                   color={'red'}
                 />
-              </TouchableOpacity>
+              </TouchableOpacity> */}
+              <GoogleSigninButton
+                style={{width: 250, height: 48}}
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={this.signIn}
+              />
               {/* <TouchableOpacity>
                 <Icons
                   style={styles.icons}
@@ -343,21 +352,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
     padding: 10,
-    borderRadius: 20,
+
     width: 250,
     alignSelf: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 3.84,
-    elevation: 5,
-    backgroundColor: 'lightgrey',
+
+    backgroundColor: '#376fcc',
   },
   AuthButtonTxt: {
-    color: 'blue',
+    color: 'white',
     fontWeight: '600',
     fontSize: 17,
     marginLeft: 10,

@@ -10,8 +10,8 @@ const initialState = {
   Authlogin: [],
 };
 export default function ApiReducer(state = initialState, action) {
-  // console.log('Action ', action);
-  // console.log('State', state);
+  console.log('Action ', action);
+  console.log('State', state);
   switch (action.type) {
     case ApiTypes.GET_DATA:
       return {

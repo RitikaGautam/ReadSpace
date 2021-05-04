@@ -16,6 +16,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   KeyboardAvoidingView,
+  StatusBar,
 } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -48,6 +49,7 @@ class Screen extends Component {
       grid: false,
       isRefreshing: false,
       isloader: false,
+      iscomic: false,
     };
   }
   refreshList = (refresh) => {
@@ -740,7 +742,7 @@ const styles = StyleSheet.create({
   },
   textinput: {
     fontSize: 20,
-    color: 'blue',
+    color: 'grey',
     paddingLeft: 10,
   },
 

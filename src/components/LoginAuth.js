@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   inputBox: {
     width: '75%',
     margin: 10,
-    padding: 15,
+    padding: 10,
     fontSize: 20,
   },
   button: {
