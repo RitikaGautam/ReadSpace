@@ -17,7 +17,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
 } from 'react-native';
-import {addEmployee} from './Database';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Modal from 'react-native-modal';

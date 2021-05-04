@@ -13,7 +13,6 @@ import {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import {connect} from 'react-redux';
-import {saveData} from './functions';
 import Back from 'react-native-vector-icons/Ionicons';
 import {bookmark, deletebook, MyDatabase} from '../modules/action';
 import Book from 'react-native-vector-icons/Ionicons';
