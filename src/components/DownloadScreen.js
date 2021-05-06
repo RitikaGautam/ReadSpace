@@ -10,6 +10,7 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Sad from 'react-native-vector-icons/Ionicons';
@@ -53,9 +54,15 @@ class DownloadScreen extends Component {
   render() {
     return (
       <>
-        <SafeAreaView />
+        {this.props.dark ? (
+          <LinearGradient style={styles.linear} colors={['white', 'black']} />
+        ) : (
+          <LinearGradient style={styles.linear} colors={['#0693e3', 'white']} />
+        )}
+
         <View style={this.props.dark ? styles.darkContainer : styles.container}>
-          <View style={styles.header}>
+          <View
+            style={[styles.header, this.props.dark ? styles.darkHeader : null]}>
             <TouchableOpacity
               style={styles.goback}
               onPress={() => this.props.navigation.goBack()}>
@@ -107,6 +114,16 @@ const styles = StyleSheet.create({
   darkContainer: {
     flex: 1,
     backgroundColor: '#252726',
+  },
+  linear: {
+    ...Platform.select({
+      ios: {
+        height: 30,
+      },
+      android: {
+        height: 0,
+      },
+    }),
   },
   dataConatiner: {
     width: 185,
@@ -196,10 +213,12 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#ba68c8',
-    height: 40,
-
+    backgroundColor: '#0693e3',
+    height: 50,
     flexDirection: 'row',
+  },
+  darkHeader: {
+    backgroundColor: '#abb8c3',
   },
   headerTxt: {
     fontWeight: '800',

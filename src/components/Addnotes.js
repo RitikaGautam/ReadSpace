@@ -11,6 +11,7 @@ import {
   Modal,
   Platform,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -69,9 +70,14 @@ class Addnotes extends Component {
   render() {
     return (
       <>
-        <SafeAreaView />
-        <View style={styles.container}>
-          <View style={styles.header}>
+        {this.props.dark ? (
+          <LinearGradient style={styles.linear} colors={['white', 'black']} />
+        ) : (
+          <LinearGradient style={styles.linear} colors={['#0693e3', 'white']} />
+        )}
+        <View style={this.props.dark ? styles.darkContainer : styles.container}>
+          <View
+            style={[styles.header, this.props.dark ? styles.darkHeader : null]}>
             <TouchableOpacity
               style={styles.goback}
               onPress={() => this.props.navigation.goBack()}>
@@ -83,8 +89,9 @@ class Addnotes extends Component {
           <View style={styles.midContainer}>
             <View style={styles.input}>
               <TextInput
-                style={styles.note}
+                style={[styles.note, this.props.dark ? styles.darknote : null]}
                 placeholder="Title"
+                placeholderTextColor={this.props.dark ? 'grey' : null}
                 multiline={true}
                 selectionColor={'green'}
                 onChangeText={(text) => this.setState({title: text})}
@@ -92,8 +99,9 @@ class Addnotes extends Component {
             </View>
             <View style={styles.input}>
               <TextInput
-                style={styles.note}
+                style={[styles.note, this.props.dark ? styles.darknote : null]}
                 placeholder="Notes"
+                placeholderTextColor={this.props.dark ? 'grey' : null}
                 multiline={true}
                 selectionColor={'red'}
                 onChangeText={(text) => this.setState({detail: text})}
@@ -102,11 +110,15 @@ class Addnotes extends Component {
           </View>
           <View style={styles.plusButton}>
             <TouchableOpacity onPress={this.handleText}>
-              <Icons name={'checkcircle'} color={'#c579d2'} size={50} />
+              <Icons name={'checkcircle'} color={'#1273de'} size={50} />
             </TouchableOpacity>
           </View>
           <Modal visible={this.state.ismodalVisible}>
-            <View style={styles.Mheader}>
+            <View
+              style={[
+                styles.Mheader,
+                this.props.dark ? styles.MdarkHeader : null,
+              ]}>
               <TouchableOpacity
                 style={styles.goback}
                 onPress={() => this.props.navigation.goBack()}>
@@ -118,9 +130,13 @@ class Addnotes extends Component {
             <View style={styles.midContainer}>
               <View style={styles.input}>
                 <TextInput
-                  style={styles.note}
+                  style={[
+                    styles.Mnote,
+                    this.props.dark ? styles.Mdarknote : null,
+                  ]}
                   placeholder="Title"
                   multiline={true}
+                  placeholderTextColor={this.props.dark ? 'grey' : 'grey'}
                   selectionColor={'green'}
                   value={this.state.updatedtitle}
                   onChangeText={(text) => this.setState({updatedtitle: text})}
@@ -128,8 +144,12 @@ class Addnotes extends Component {
               </View>
               <View style={styles.input}>
                 <TextInput
-                  style={styles.note}
+                  style={[
+                    styles.Mnote,
+                    this.props.dark ? styles.Mdarknote : null,
+                  ]}
                   placeholder="Notes"
+                  placeholderTextColor={this.props.dark ? 'grey' : 'grey'}
                   multiline={true}
                   selectionColor={'red'}
                   value={this.state.updateddetail}
@@ -139,7 +159,7 @@ class Addnotes extends Component {
             </View>
             <View style={styles.plusButton}>
               <TouchableOpacity onPress={this.handleUpdatedText}>
-                <Icons name={'checkcircle'} color={'#c579d2'} size={50} />
+                <Icons name={'checkcircle'} color={'#1273de'} size={50} />
               </TouchableOpacity>
             </View>
           </Modal>
@@ -148,26 +168,47 @@ class Addnotes extends Component {
     );
   }
 }
-
+const mapStateToProps = (state) => {
+  return {
+    dark: state.darkScreen,
+  };
+};
 const mapDispatchToProps = (dispatch) => ({
   todo: (data, value) => dispatch(todo(data, value)),
   Updatedtodo: (data) => dispatch(Updatedtodo(data)),
 });
-export default connect(null, mapDispatchToProps)(Addnotes);
+export default connect(mapStateToProps, mapDispatchToProps)(Addnotes);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
   },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: '#252726',
+  },
+  linear: {
+    ...Platform.select({
+      ios: {
+        height: 30,
+      },
+      android: {
+        height: 0,
+      },
+    }),
+  },
   header: {
-    backgroundColor: '#ba68c8',
-    height: 40,
     alignItems: 'center',
+    backgroundColor: '#0693e3',
+    height: 50,
     flexDirection: 'row',
   },
+  darkHeader: {
+    backgroundColor: '#abb8c3',
+  },
   Mheader: {
-    backgroundColor: '#ba68c8',
+    backgroundColor: '#1273de',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -178,6 +219,9 @@ const styles = StyleSheet.create({
         marginTop: 40,
       },
     }),
+  },
+  MdarkHeader: {
+    backgroundColor: '#abb8c3',
   },
   goback: {
     paddingHorizontal: 10,
@@ -200,6 +244,18 @@ const styles = StyleSheet.create({
   note: {
     fontSize: 20,
     fontWeight: '700',
+    color: 'black',
+  },
+  darknote: {
+    color: 'white',
+  },
+  Mnote: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'black',
+  },
+  Mdarknote: {
+    color: '#004dcf',
   },
   midContainer: {
     height: windowHeight / 1.4,

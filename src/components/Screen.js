@@ -17,7 +17,10 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   StatusBar,
+  ScrollView,
 } from 'react-native';
+import database from '@react-native-firebase/database';
+import LinearGradient from 'react-native-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import Modal from 'react-native-modal';
@@ -25,6 +28,7 @@ import {connect} from 'react-redux';
 import Icons from 'react-native-vector-icons/AntDesign';
 import Book from 'react-native-vector-icons/Ionicons';
 import Sort from 'react-native-vector-icons/MaterialIcons';
+
 import {
   updateData,
   getdata,
@@ -49,7 +53,26 @@ class Screen extends Component {
       grid: false,
       isRefreshing: false,
       isloader: false,
+      isfiction: false,
+      isbiography: false,
       iscomic: false,
+      isscience: false,
+      isaeronautics: false,
+      isthriller: false,
+      ismathematics: false,
+      iscomputer: false,
+      istechnology: false,
+      ismystery: false,
+      isromance: false,
+      ishealth: false,
+      ishumor: false,
+      ishistory: false,
+      iscooking: false,
+      isfantasy: false,
+      ishorror: false,
+      ismotivational: false,
+      istravel: false,
+      isparanormal: false,
     };
   }
   refreshList = (refresh) => {
@@ -66,12 +89,148 @@ class Screen extends Component {
     const newvalue = await AsyncStorage.getItem('NotesDatabase');
     const newresult = JSON.parse(newvalue);
     this.props.restoreNotes(newresult);
-    // addEmployee(
-    //   this.props.loginData.id,
-    //   JSON.stringify(this.props.bookmark),
-    //   JSON.stringify(this.props.downloads),
-    // );
   }
+
+  Fiction = () => {
+    this.props.getdata('subject:fiction');
+    this.setState({
+      isfiction: true,
+      currentbook: 'subject:fiction',
+    });
+  };
+  Biography = () => {
+    this.props.getdata('subject:biography & autobiography');
+    this.setState({
+      isbiography: true,
+      currentbook: 'subject:biography & autobiography',
+    });
+  };
+  Comic = () => {
+    this.props.getdata('subject:comic');
+    this.setState({
+      iscomic: true,
+      currentbook: 'subject:comic',
+    });
+  };
+  Science = () => {
+    this.props.getdata('subject:science');
+    this.setState({
+      isscience: true,
+      currentbook: 'subject:science',
+    });
+  };
+  Aeronautics = () => {
+    this.props.getdata('subject:Aeronautics');
+    this.setState({
+      isaeronautics: true,
+      currentbook: 'subject:Aeronautics',
+    });
+  };
+  Thriller = () => {
+    this.props.getdata('subject:thriller');
+    this.setState({
+      isthriller: true,
+      currentbook: 'subject:thriller',
+    });
+  };
+  Mathematics = () => {
+    this.props.getdata('subject:mathematics');
+    this.setState({
+      ismathematics: true,
+      currentbook: 'subject:mathematics',
+    });
+  };
+  Computer = () => {
+    this.props.getdata('subject:computer');
+    this.setState({
+      iscomputer: true,
+      currentbook: 'subject:computer',
+    });
+  };
+  Technology = () => {
+    this.props.getdata('subject:Technology & Engineering');
+    this.setState({
+      istechnology: true,
+      currentbook: 'subject:Technology & Engineering',
+    });
+  };
+  Mystery = () => {
+    this.props.getdata('subject:Mystery');
+    this.setState({
+      ismystery: true,
+      currentbook: 'subject:Mystery',
+    });
+  };
+  Romance = () => {
+    this.props.getdata('subject:Romance');
+    this.setState({
+      isromance: true,
+      currentbook: 'subject:Romance',
+    });
+  };
+  Health = () => {
+    this.props.getdata('subject:Health');
+    this.setState({
+      ishealth: true,
+      currentbook: 'subject:Health',
+    });
+  };
+  Humor = () => {
+    this.props.getdata('subject:Humor');
+    this.setState({
+      ishumor: true,
+      currentbook: 'subject:Humor',
+    });
+  };
+  History = () => {
+    this.props.getdata('subject:History');
+    this.setState({
+      ishistory: true,
+      currentbook: 'subject:History',
+    });
+  };
+  Cooking = () => {
+    this.props.getdata('subject:Cooking');
+    this.setState({
+      iscooking: true,
+      currentbook: 'subject:Cooking',
+    });
+  };
+  Fantasy = () => {
+    this.props.getdata('subject:Fantasy');
+    this.setState({
+      isfantasy: true,
+      currentbook: 'subject:Fantasy',
+    });
+  };
+  Horror = () => {
+    this.props.getdata('subject:Horror');
+    this.setState({
+      ishorror: true,
+      currentbook: 'subject:Horror',
+    });
+  };
+  Motivational = () => {
+    this.props.getdata('subject:Motivational');
+    this.setState({
+      ismotivational: true,
+      currentbook: 'subject:Motivational',
+    });
+  };
+  Travel = () => {
+    this.props.getdata('subject:Travel');
+    this.setState({
+      istravel: true,
+      currentbook: 'subject: Travel',
+    });
+  };
+  Paranormal = () => {
+    this.props.getdata('subject:Paranormal');
+    this.setState({
+      isparanormal: true,
+      currentbook: 'subject:Paranormal',
+    });
+  };
   modalVisible = (visible) => {
     this.setState({
       ismodalVisible: visible,
@@ -125,6 +284,7 @@ class Screen extends Component {
 
   handleFilter = () => {
     if (this.state.partial) {
+      // console.log('Cureebt', this.state.currentbook);
       this.props.filterbook(this.state.currentbook, 'partial');
     } else if (this.state.full) {
       this.props.filterbook(this.state.currentbook, 'full');
@@ -137,11 +297,17 @@ class Screen extends Component {
     }
     this.modalVisible(false);
   };
+  Navigate = (item) => {
+    this.props.navigation.navigate('Details', {item});
+    // this.props.navigation.reset({
+    //   index: 0,
+    //   routes: [{name: 'Details', params: {item}}],
+    // });
+  };
   dataStyling = ({item}) => {
     return (
       <View>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('Details', {item})}>
+        <TouchableOpacity onPress={() => this.Navigate(item)}>
           <View style={styles.innerdataContainer}>
             <View style={styles.imgContainer}>
               {item.volumeInfo.imageLinks ? (
@@ -244,7 +410,53 @@ class Screen extends Component {
         isloader: false,
       });
     }, 5000);
-    this.props.updateData(this.state.currentbook, this.props.page + 1);
+    if (this.state.isfiction) {
+      this.props.updateData('subject:fiction', this.props.page + 1);
+    } else if (this.state.isbiography) {
+      this.props.updateData(
+        'subject:biography & autobiography',
+        this.props.page + 1,
+      );
+    } else if (this.state.iscomic) {
+      this.props.updateData('subject:comic', this.props.page + 1);
+    } else if (this.state.isscience) {
+      this.props.updateData('subject:science', this.props.page + 1);
+    } else if (this.state.isaeronautics) {
+      this.props.updateData('subject:Aeronautics', this.props.page + 1);
+    } else if (this.state.isthriller) {
+      this.props.updateData('subject:thriller', this.props.page + 1);
+    } else if (this.state.ismathematics) {
+      this.props.updateData('subject:mathematics', this.props.page + 1);
+    } else if (this.state.iscomputer) {
+      this.props.updateData('subject:computer', this.props.page + 1);
+    } else if (this.state.istechnology) {
+      this.props.updateData(
+        'subject:Technology & Engineering',
+        this.props.page + 1,
+      );
+    } else if (this.state.ismystery) {
+      this.props.updateData('subject:Mystery', this.props.page + 1);
+    } else if (this.state.isromance) {
+      this.props.updateData('subject:Romance', this.props.page + 1);
+    } else if (this.state.ishealth) {
+      this.props.updateData('subject:Health', this.props.page + 1);
+    } else if (this.state.ishumor) {
+      this.props.updateData('subject:Humor', this.props.page + 1);
+    } else if (this.state.ishistory) {
+      this.props.updateData('subject:History', this.props.page + 1);
+    } else if (this.state.iscooking) {
+      this.props.updateData('subject:Cooking', this.props.page + 1);
+    } else if (this.state.isfantasy) {
+      this.props.updateData('subject:Fantasy', this.props.page + 1);
+    } else if (this.state.ishorror) {
+      this.props.updateData('subject:Horror', this.props.page + 1);
+    } else if (this.state.istravel) {
+      this.props.updateData('subject:Travel', this.props.page + 1);
+    } else if (this.state.isparanormal) {
+      this.props.updateData('subject:Paranormal', this.props.page + 1);
+    } else {
+      this.props.updateData(this.state.currentbook, this.props.page + 1);
+    }
   };
   handleChange = (book) => {
     this.props.searchdata(book);
@@ -273,7 +485,18 @@ class Screen extends Component {
   render() {
     return (
       <>
-        <SafeAreaView />
+        {this.props.dark ? (
+          <LinearGradient
+            style={styles.linear}
+            colors={['white', 'black']}></LinearGradient>
+        ) : (
+          <LinearGradient
+            style={styles.linear}
+            colors={['#0693e3', 'white']}></LinearGradient>
+        )}
+
+        {/* <SafeAreaView /> */}
+
         <View style={this.props.dark ? styles.darkcontainer : styles.container}>
           <View
             style={[
@@ -292,7 +515,8 @@ class Screen extends Component {
                       ? styles.darkheaderTitle
                       : styles.headerTitle
                   }>
-                  {this.state.currentbook}
+                  {/* {this.state.currentbook} */}
+                  ReadSpace
                 </Text>
               </View>
               <View style={styles.boxContainer}>
@@ -330,6 +554,195 @@ class Screen extends Component {
             </View>
           </View>
           <KeyboardAvoidingView>
+            <View style={styles.categorieButtonsContainer}>
+              <ScrollView horizontal={true}>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Fiction()}>
+                    <Text style={styles.categoryButtonTxt}>Fiction</Text>
+                  </TouchableOpacity>
+                </View>
+
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Comic()}>
+                    <Text style={styles.categoryButtonTxt}>Comics</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Science()}>
+                    <Text style={styles.categoryButtonTxt}>Science</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Aeronautics()}>
+                    <Text style={styles.categoryButtonTxt}>Aeronautics</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Thriller()}>
+                    <Text style={styles.categoryButtonTxt}>Thriller</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Mathematics()}>
+                    <Text style={styles.categoryButtonTxt}>Mathematics</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Computer()}>
+                    <Text style={styles.categoryButtonTxt}>Computer</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Technology()}>
+                    <Text style={styles.categoryButtonTxt}>
+                      Technology & Engineering
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Mystery()}>
+                    <Text style={styles.categoryButtonTxt}>Mystery</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Romance()}>
+                    <Text style={styles.categoryButtonTxt}>Romance</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Health()}>
+                    <Text style={styles.categoryButtonTxt}>Health</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Humor()}>
+                    <Text style={styles.categoryButtonTxt}>Humor</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.History()}>
+                    <Text style={styles.categoryButtonTxt}>History</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Cooking()}>
+                    <Text style={styles.categoryButtonTxt}>Cooking</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Biography()}>
+                    <Text style={styles.categoryButtonTxt}>
+                      Biography & Autobiography{' '}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Fantasy()}>
+                    <Text style={styles.categoryButtonTxt}>Fantasy</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Horror()}>
+                    <Text style={styles.categoryButtonTxt}>Horror</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Motivational()}>
+                    <Text style={styles.categoryButtonTxt}>Motivational</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Travel()}>
+                    <Text style={styles.categoryButtonTxt}>Travel</Text>
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={[
+                    styles.categoryButton,
+                    this.props.dark ? styles.datacategoryButton : null,
+                  ]}>
+                  <TouchableOpacity onPress={() => this.Paranormal()}>
+                    <Text style={styles.categoryButtonTxt}>Paranormal</Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </View>
             {this.state.grid ? (
               <FlatList
                 data={this.props.listData}
@@ -435,9 +848,9 @@ class Screen extends Component {
           </Modal>
           {/* {console.log('Page', this.props.page)}
           {console.log('Books', this.props.dark)} */}
-          {console.log('login', this.props.loginData)}
+          {/* {console.log('login', this.props.loginData)}
           {console.log('bookmark', this.props.bookmark)}
-          {console.log('downloads', this.props.downloads)}
+          {console.log('downloads', this.props.downloads)} */}
         </View>
       </>
     );
@@ -451,6 +864,7 @@ const mapStateToProps = (state) => {
     loginData: state.LoginData,
     bookmark: state.bookmark,
     downloads: state.downloads,
+    uid: state.Authlogin,
   };
 };
 const mapDispatchToProps = (dispatch) => ({
@@ -472,11 +886,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#252726',
   },
+  linear: {
+    ...Platform.select({
+      ios: {
+        height: 30,
+      },
+      android: {
+        height: 0,
+      },
+    }),
+  },
   innerContainer: {
-    backgroundColor: 'rgba(11, 184, 168,0.6)',
-    borderBottomColor: 'rgba(11, 184, 168,0.8)',
+    backgroundColor: '#1273de',
+    borderBottomColor: 'rgba(18, 115, 112,0.8)',
     borderBottomWidth: 5,
-    borderTopColor: 'rgba(11, 184, 168,0.8)',
+    borderTopColor: 'rgba(18, 115, 112,0.8)',
     borderTopWidth: 2,
     // shadowColor: 'rgba(152, 43, 196,1)',
     // shadowOffset: {
@@ -490,9 +914,9 @@ const styles = StyleSheet.create({
   },
   darkinnerContainer: {
     backgroundColor: 'rgba(22, 23, 23,0.6)',
-    borderBottomColor: 'rgba(22, 23, 23,0.8)',
+    borderBottomColor: 'rgba(22, 23, 23,1)',
     borderBottomWidth: 5,
-    borderTopColor: 'rgba(22, 23, 23,0.8)',
+    borderTopColor: 'rgba(22, 23, 23,1)',
     borderTopWidth: 2,
   },
   header: {
@@ -560,7 +984,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 25,
     fontWeight: '500',
-    color: '#194D48',
+    color: 'white',
     textShadowColor: 'white',
     textShadowOffset: {width: 1, height: 4},
     textShadowRadius: 5,
@@ -791,5 +1215,23 @@ const styles = StyleSheet.create({
   },
   gridContainer: {
     marginRight: 15,
+  },
+  categorieButtonsContainer: {
+    margin: 10,
+  },
+  categoryButton: {
+    borderColor: '#2d6686',
+    borderWidth: 1,
+    padding: 10,
+    backgroundColor: '#36adf0',
+    margin: 5,
+  },
+  datacategoryButton: {
+    backgroundColor: 'grey',
+  },
+  categoryButtonTxt: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: 'white',
   },
 });

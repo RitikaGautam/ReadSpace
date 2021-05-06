@@ -8,10 +8,13 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
+import {LoginAuthUser} from '../modules/action';
+import Modal from 'react-native-modal';
 import {connect} from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import Eye from 'react-native-vector-icons/Entypo';
 import Icons from 'react-native-vector-icons/MaterialIcons';
+import database from '@react-native-firebase/database';
 class LoginAuth extends Component {
   constructor(props) {
     super(props);
@@ -19,6 +22,9 @@ class LoginAuth extends Component {
       email: '',
       password: '',
       issecure: true,
+      ismodal: false,
+      newpassword: '',
+      uid: '',
     };
   }
 
@@ -30,13 +36,44 @@ class LoginAuth extends Component {
       );
 
       if (doLogin.user) {
+        this.setState({
+          uid: doLogin.user.uid,
+        });
+        console.log('UID', this.state.uid);
         this.props.navigation.navigate('TabScreen');
+        this.props.LoginAuthUser(this.state.uid);
+        this.saveData();
       }
     } catch (e) {
       Alert.alert(e.message);
     }
   };
+  saveData = () => {
+    database()
+      .ref(`MyDatabase${this.state.uid}`)
+      .set({
+        name: this.state.uid,
+        bookmark: this.props.bookmark,
+        downloads: this.props.downloads,
+      })
+      // .push({
+      //   name: this.state.uid,
+      //   bookmark: this.props.bookmark,
+      //   downloads: this.props.downloads,
+      // })
+      .then(() => console.log('Data set.'));
+  };
 
+  forgott = async (Email) => {
+    const reset = auth()
+      .sendPasswordResetEmail(Email)
+      .then(function (user) {
+        Alert.alert('Please check your email...');
+      })
+      .catch(function (e) {
+        console.log(e);
+      });
+  };
   render() {
     return (
       <View style={styles.container}>
@@ -68,14 +105,16 @@ class LoginAuth extends Component {
         <TouchableOpacity style={styles.button} onPress={this.login}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.button} onPress={this.logOut}>
-          <Text style={styles.buttonText}>Logout</Text>
-        </TouchableOpacity> */}
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => this.forgott(this.state.email)}>
+          <Text style={styles.buttonText}>ForgotPassword</Text>
+        </TouchableOpacity>
         <Button
           title="Don't have an account yet? Sign up"
           onPress={() => this.props.navigation.navigate('Signup')}
         />
-        {console.log('Login', this.props.login)}
+        {/* {console.log('Login', this.props.login)} */}
       </View>
     );
   }
@@ -93,6 +132,9 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     fontSize: 20,
+  },
+  modal: {
+    backgroundColor: 'white',
   },
   button: {
     marginTop: 30,
@@ -144,7 +186,12 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     login: state.Authlogin,
+    bookmark: state.bookmark,
+    downloads: state.downloads,
   };
 };
+const mapDispatchToProps = (dispatch) => ({
+  LoginAuthUser: (data) => dispatch(LoginAuthUser(data)),
+});
 
-export default connect(mapStateToProps, null)(LoginAuth);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginAuth);

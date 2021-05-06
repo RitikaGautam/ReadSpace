@@ -9,7 +9,9 @@ import {
   FlatList,
   Dimensions,
   Alert,
+  Platform,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import {connect} from 'react-redux';
@@ -32,7 +34,11 @@ class Notes extends Component {
   };
   dataStyling = ({item}) => {
     return (
-      <View style={styles.dataContainer}>
+      <View
+        style={[
+          styles.dataContainer,
+          this.props.dark ? styles.darkDataContainer : null,
+        ]}>
         <View style={styles.middataContainer}>
           <TouchableOpacity
             onLongPress={() => this.deleteData(item.Id)}
@@ -47,9 +53,14 @@ class Notes extends Component {
   render() {
     return (
       <>
-        <SafeAreaView />
-        <View style={styles.container}>
-          <View style={styles.header}>
+        {this.props.dark ? (
+          <LinearGradient style={styles.linear} colors={['white', 'black']} />
+        ) : (
+          <LinearGradient style={styles.linear} colors={['#0693e3', 'white']} />
+        )}
+        <View style={this.props.dark ? styles.darkContainer : styles.container}>
+          <View
+            style={[styles.header, this.props.dark ? styles.darkHeader : null]}>
             <TouchableOpacity
               style={styles.goback}
               onPress={() => this.props.navigation.goBack()}>
@@ -70,7 +81,7 @@ class Notes extends Component {
           <View style={styles.plusButton}>
             <TouchableOpacity
               onPress={() => this.props.navigation.navigate('Addnotes')}>
-              <Icons name={'pluscircle'} color={'#c579d2'} size={60} />
+              <Icons name={'pluscircle'} color={'#1273de'} size={60} />
             </TouchableOpacity>
           </View>
         </View>
@@ -81,6 +92,7 @@ class Notes extends Component {
 const mapStateToProps = (state) => {
   return {
     notes: state.notes,
+    dark: state.darkScreen,
   };
 };
 const mapDispatchToProps = (dispatch) => {
@@ -93,14 +105,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    flexDirection: 'column',
+  },
+  darkContainer: {
+    flex: 1,
+    backgroundColor: '#252726',
+  },
+  linear: {
+    ...Platform.select({
+      ios: {
+        height: 30,
+      },
+      android: {
+        height: 0,
+      },
+    }),
   },
   header: {
-    backgroundColor: '#ba68c8',
-    height: 40,
     alignItems: 'center',
+    backgroundColor: '#0693e3',
+    height: 50,
     marginBottom: 20,
     flexDirection: 'row',
+  },
+  darkHeader: {
+    backgroundColor: '#abb8c3',
   },
   headerTxt: {
     fontSize: 20,
@@ -120,10 +148,13 @@ const styles = StyleSheet.create({
     width: windowWidth / 2.2,
     padding: 10,
     borderRadius: 15,
-    backgroundColor: '#f7eef9',
+    backgroundColor: '#b3cbe5',
     marginLeft: 10,
     marginRight: 5,
     marginBottom: 10,
+  },
+  darkDataContainer: {
+    backgroundColor: '#ced5db',
   },
   title: {
     fontSize: 18,

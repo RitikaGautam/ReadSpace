@@ -1,5 +1,7 @@
 import ApiTypes from './types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
 export const updateData = (book, pageNo) => async (dispatch) => {
   try {
     const response = await fetch(
@@ -107,7 +109,19 @@ export const DarkMode = (mode) => {
     payload: mode,
   };
 };
-
+export const LoginwithGoogle = (mode) => {
+  console.log('Mode', mode);
+  return {
+    type: ApiTypes.Google,
+    payload: mode,
+  };
+};
+export const LoginwithAuth = (mode) => {
+  return {
+    type: ApiTypes.Authentication,
+    payload: mode,
+  };
+};
 export const LoginUser = (user) => {
   return {
     type: ApiTypes.Login,
@@ -122,6 +136,8 @@ export const LoginAuthUser = (user) => {
 };
 export const download = (book, value) => async (dispatch, getState) => {
   //await AsyncStorage.clear();
+  const google = getState().google;
+  const loginid = getState().LoginData.id;
   if (value !== null) {
     const newdownloads = [...value.downloads, book];
     const data = {
@@ -131,7 +147,22 @@ export const download = (book, value) => async (dispatch, getState) => {
     };
     const newresult = JSON.stringify(data);
     const newdata = await AsyncStorage.setItem('Database', newresult);
-
+    const uid = getState().Authlogin;
+    if (google) {
+      database()
+        .ref(`MyDatabase${loginid}`)
+        .update({
+          downloads: newdownloads,
+        })
+        .then(() => console.log('Data set.'));
+    } else {
+      database()
+        .ref(`MyDatabase${uid}`)
+        .update({
+          downloads: newdownloads,
+        })
+        .then(() => console.log('Data set.'));
+    }
     dispatch({
       type: ApiTypes.DownloadBook,
       payload: newdownloads,
@@ -150,6 +181,10 @@ export const bookmark = (book, value) => async (dispatch, getState) => {
   //await AsyncStorage.clear();
 
   //console.log('value', value);
+  const download = getState().downloads;
+  const google = getState().google;
+  const loginid = getState().LoginData.id;
+  console.log('Prince', loginid);
   if (value !== null) {
     const newbookmark = [...value.bookmark, book];
 
@@ -158,6 +193,22 @@ export const bookmark = (book, value) => async (dispatch, getState) => {
       bookmark: newbookmark,
       downloads: value.downloads,
     };
+    const uid = getState().Authlogin;
+    if (google) {
+      database()
+        .ref(`MyDatabase${loginid}`)
+        .update({
+          bookmark: newbookmark,
+        })
+        .then(() => console.log('Data set.'));
+    } else {
+      database()
+        .ref(`MyDatabase${uid}`)
+        .update({
+          bookmark: newbookmark,
+        })
+        .then(() => console.log('Data set.'));
+    }
 
     const newresult = JSON.stringify(data);
     const newdata = await AsyncStorage.setItem('Database', newresult);
@@ -180,6 +231,24 @@ export const bookmark = (book, value) => async (dispatch, getState) => {
 export const deletebook = (bookid) => async (dispatch, getState) => {
   const value = getState().bookmark;
   const result = value.filter((item) => item.id !== bookid);
+  const uid = getState().Authlogin;
+  const google = getState().google;
+  const loginid = getState().LoginData.id;
+  if (google) {
+    database()
+      .ref(`MyDatabase${loginid}`)
+      .update({
+        bookmark: result,
+      })
+      .then(() => console.log('Data set updated.'));
+  } else {
+    database()
+      .ref(`MyDatabase${uid}`)
+      .update({
+        bookmark: result,
+      })
+      .then(() => console.log('Data set updated.'));
+  }
   console.log(result, bookid);
   const id = getState().id;
   const downloads = getState().downloads;
@@ -193,6 +262,25 @@ export const deletebook = (bookid) => async (dispatch, getState) => {
 export const deleteDownloadedbook = (bookid) => async (dispatch, getState) => {
   const value = getState().downloads;
   const result = value.filter((item) => item.id !== bookid);
+  const uid = getState().Authlogin;
+  const google = getState().google;
+  const loginid = getState().LoginData.id;
+  if (google) {
+    database()
+      .ref(`MyDatabase${loginid}`)
+      .update({
+        downloads: result,
+      })
+      .then(() => console.log('Data set updated.'));
+  } else {
+    database()
+      .ref(`MyDatabase${uid}`)
+      .update({
+        downloads: result,
+      })
+      .then(() => console.log('Data set updated.'));
+  }
+
   console.log(result, bookid);
   const id = getState().id;
   const bookmarks = getState().bookmark;
@@ -284,4 +372,59 @@ export const Updatedtodo = (data) => async (dispatch, getState) => {
     type: ApiTypes.ADD_TODO,
     payload: newdata,
   });
+};
+
+export const ReviewsData = (bookid) => async (dispatch) => {
+  const user = await firestore().collection('Reviews').doc(bookid).get();
+  console.log('USER', user._data);
+  if (user._data) {
+    dispatch({
+      type: ApiTypes.Reviews,
+      review: user._data.comments,
+    });
+  } else {
+    dispatch({
+      type: ApiTypes.Reviews,
+      review: [],
+    });
+  }
+};
+
+export const AddReviews = (bookid, data) => async (dispatch) => {
+  const user = await firestore().collection('Reviews').doc(bookid).get();
+
+  console.log('USER', user);
+  if (!user._data) {
+    console.log('No matching documents.');
+    const Result = firestore()
+      .collection('Reviews')
+      .doc(bookid)
+      .set({
+        comments: [data],
+      })
+      .then((data) => {
+        console.log('User added!', data);
+      });
+    dispatch({
+      type: ApiTypes.Reviews,
+      review: [data],
+    });
+    return;
+  } else {
+    const newdata = [...user._data.comments, data];
+    const Result = firestore()
+      .collection('Reviews')
+      .doc(bookid)
+      .set({
+        comments: newdata,
+      })
+      .then(() => {
+        console.log('User added!');
+      });
+    dispatch({
+      type: ApiTypes.Reviews,
+      review: newdata,
+    });
+    return;
+  }
 };

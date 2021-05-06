@@ -58,8 +58,6 @@ class Signup extends React.Component {
     } catch (e) {
       Alert.alert(e.message);
     }
-    const data = {name: this.state.name, email: this.state.email};
-    this.props.LoginAuthUser(data);
   };
   render() {
     return (

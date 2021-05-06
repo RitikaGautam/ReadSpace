@@ -194,8 +194,8 @@ class ProfileScreen extends Component {
           </View>
           {/* {console.log('Downloads', this.props.downloads)}
           {console.log('Bookmarks', this.props.bookmark)} */}
-          {console.log('loginData', this.props.loginData)}
-          {console.log('uSER', this.state.user)}
+          {/* {console.log('loginData', this.props.loginData)}
+          {console.log('uSER', this.state.user)} */}
         </View>
       </>
     );
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    color: 'blue',
+    color: '#004dcf',
     fontSize: 17,
     marginHorizontal: 20,
     marginVertical: 10,
@@ -258,9 +258,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
     padding: 10,
+    backgroundColor: '#c4def6',
   },
   darkbutton: {
     color: 'lightgrey',
+    backgroundColor: 'grey',
   },
   horizontalLine: {
     borderBottomColor: 'grey',
@@ -304,6 +306,7 @@ const styles = StyleSheet.create({
 });
 const mapDispatchToProps = (dispatch) => {
   return {
+    DarkMode: (mode) => dispatch(DarkMode(mode)),
     LoginUser: (data) => dispatch(LoginUser(data)),
   };
 };

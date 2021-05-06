@@ -15,6 +15,9 @@ const ApiTypes = {
   RestoreData: 'RestoreData',
   RestoreNotes: 'RestoreNotes',
   AuthLogin: 'AuthLogin',
+  Google: 'Google',
+  Authentication: 'Authentication',
+  Reviews: 'Reviews',
 };
 export default {
   ...ApiTypes,

@@ -17,7 +17,7 @@ class TabScreen extends Component {
       <Tab.Navigator
         initialRouteName="Screen"
         tabBarOptions={{
-          activeTintColor: this.props.dark ? '#ffe0b2' : '#194D48',
+          activeTintColor: this.props.dark ? '#ffe0b2' : '#8ed1fc',
           inactiveTintColor: 'white',
           labelStyle: {fontSize: 15},
           style: {
@@ -30,9 +30,7 @@ class TabScreen extends Component {
               },
             }),
 
-            backgroundColor: this.props.dark
-              ? 'rgba(12, 12, 12,1)'
-              : 'rgba(11, 184, 168,1)',
+            backgroundColor: this.props.dark ? 'rgba(12, 12, 12,1)' : '#1273DE',
           },
         }}>
         <Tab.Screen
@@ -46,7 +44,7 @@ class TabScreen extends Component {
                   <Icons
                     name={'home'}
                     size={30}
-                    color={this.props.dark ? '#ffe0b2' : '#194D48'}
+                    color={this.props.dark ? '#ffe0b2' : '#8ed1fc'}
                   />
                 );
               }
@@ -65,7 +63,7 @@ class TabScreen extends Component {
                   <Icons
                     name={'bookmarks'}
                     size={30}
-                    color={this.props.dark ? '#ffe0b2' : '#194D48'}
+                    color={this.props.dark ? '#ffe0b2' : '#8ed1fc'}
                   />
                 );
               }
@@ -84,7 +82,7 @@ class TabScreen extends Component {
                   <Profile
                     name={'user'}
                     size={30}
-                    color={this.props.dark ? '#ffe0b2' : '#194D48'}
+                    color={this.props.dark ? '#ffe0b2' : '#8ed1fc'}
                   />
                 );
               }

@@ -10,6 +10,7 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import {connect} from 'react-redux';
@@ -18,10 +19,41 @@ import {bookmark, deletebook, MyDatabase} from '../modules/action';
 import Book from 'react-native-vector-icons/Ionicons';
 import Sad from 'react-native-vector-icons/Ionicons';
 import Delete from 'react-native-vector-icons/AntDesign';
+import database from '@react-native-firebase/database';
 class BookMarkScreen extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      bookMark: '',
+    };
   }
+  // componentDidMount() {
+  //   this.retrieveData();
+  // }
+  // retrieveData = () => {
+  //   if (this.props.google) {
+  //     database()
+  //       .ref(`MyDatabase${this.props.loginData.id}`)
+  //       .once('value')
+  //       .then((snapshot) => {
+  //         console.log('Ritika User data: ', snapshot.val().bookmark);
+  //         this.setState({
+  //           bookMark: snapshot.val().bookmark,
+  //         });
+  //         console.log('BOOKMARK', this.state.bookMark);
+  //       });
+  //   } else {
+  //     database()
+  //       .ref(`MyDatabase${this.props.uid}`)
+  //       .once('value')
+  //       .then((snapshot) => {
+  //         console.log('User data: ', snapshot.val());
+  //         this.setState({
+  //           bookMark: snapshot.val().bookmark,
+  //         });
+  //       });
+  //   }
+  // };
   dataStyling = ({item}) => {
     return (
       <View>
@@ -60,9 +92,14 @@ class BookMarkScreen extends Component {
   render() {
     return (
       <>
-        <SafeAreaView />
+        {this.props.dark ? (
+          <LinearGradient style={styles.linear} colors={['white', 'black']} />
+        ) : (
+          <LinearGradient style={styles.linear} colors={['#0693e3', 'white']} />
+        )}
         <View style={this.props.dark ? styles.darkContainer : styles.container}>
-          <View style={styles.header}>
+          <View
+            style={[styles.header, this.props.dark ? styles.darkHeader : null]}>
             <TouchableOpacity
               style={styles.goback}
               onPress={() => this.props.navigation.goBack()}>
@@ -104,10 +141,12 @@ const mapStateToProps = (state) => {
     BookDatabase: state.BookDatabase,
     loginData: state.LoginData,
     downloads: state.downloads,
+    google: state.google,
   };
 };
 const mapDispatchToProps = (dispatch) => ({
   deletebook: (bookid) => dispatch(deletebook(bookid)),
+
   // MyDatabase: () => dispatch(MyDatabase()),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(BookMarkScreen);
@@ -124,6 +163,16 @@ const styles = StyleSheet.create({
     width: 185,
     margin: 10,
     //backgroundColor: 'orange',
+  },
+  linear: {
+    ...Platform.select({
+      ios: {
+        height: 30,
+      },
+      android: {
+        height: 0,
+      },
+    }),
   },
   txt: {
     fontSize: 18,
@@ -213,9 +262,12 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    backgroundColor: '#ba68c8',
+    backgroundColor: '#0693e3',
     height: 40,
     flexDirection: 'row',
+  },
+  darkHeader: {
+    backgroundColor: '#abb8c3',
   },
   headerTxt: {
     fontWeight: '800',

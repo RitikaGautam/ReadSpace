@@ -7,11 +7,15 @@ const initialState = {
   LoginData: [],
   downloads: [],
   notes: [],
-  Authlogin: [],
+  Authlogin: '',
+  google: false,
+  authentication: false,
+  review: [],
+  // array: [],
 };
 export default function ApiReducer(state = initialState, action) {
-  console.log('Action ', action);
-  console.log('State', state);
+  // console.log('Action ', action);
+  // console.log('State', state);
   switch (action.type) {
     case ApiTypes.GET_DATA:
       return {
@@ -80,6 +84,21 @@ export default function ApiReducer(state = initialState, action) {
       return {
         ...state,
         notes: action.payload.data,
+      };
+    case ApiTypes.Google:
+      return {
+        ...state,
+        google: action.payload,
+      };
+    case ApiTypes.Authentication:
+      return {
+        ...state,
+        authentication: action.payload,
+      };
+    case ApiTypes.Reviews:
+      return {
+        ...state,
+        review: action.review,
       };
     default:
       return state;

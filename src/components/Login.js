@@ -23,8 +23,8 @@ import {
 import Icons from 'react-native-vector-icons/AntDesign';
 import TwitterIcons from 'react-native-vector-icons/Entypo';
 import {connect} from 'react-redux';
-
-import {LoginUser} from '../modules/action';
+import database from '@react-native-firebase/database';
+import {LoginUser, LoginwithGoogle} from '../modules/action';
 class Login extends Component {
   constructor(props) {
     super(props);
@@ -51,6 +51,13 @@ class Login extends Component {
 
     this.coverpage();
   }
+  saveData = () => {
+    database().ref(`MyDatabase${this.state.userDetails.id}`).set({
+      name: this.state.userDetails.id,
+      bookmark: this.props.bookmark,
+      downloads: this.props.downloads,
+    });
+  };
   coverpage = () => {
     setTimeout(() => {
       this.setState({
@@ -64,6 +71,9 @@ class Login extends Component {
       this.setState({userDetails: userInfo.user, login: true});
       this.props.LoginUser(this.state.userDetails);
     } catch (error) {}
+    this.saveData();
+    console.log('ritika', this.state.userDetails.id);
+    this.props.LoginwithGoogle(true);
   };
   getCurrentUserInfo = async () => {
     try {
@@ -368,11 +378,13 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     loginData: state.LoginData,
+    bookmark: state.bookmark,
+    downloads: state.downloads,
   };
 };
 const mapDispatchToProps = (dispatch) => ({
   LoginUser: (data) => dispatch(LoginUser(data)),
-
+  LoginwithGoogle: (mode) => dispatch(LoginwithGoogle(mode)),
   // NotesGet: (id) => dispatch(NotesGet(id)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

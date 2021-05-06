@@ -11,18 +11,26 @@ import {
   ScrollView,
   Platform,
   SafeAreaView,
+  TextInput,
+  Button,
+  FlatList,
+  KeyboardAvoidingView,
 } from 'react-native';
+import Modal from 'react-native-modal';
+import firestore from '@react-native-firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Book from 'react-native-vector-icons/Ionicons';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 import {connect} from 'react-redux';
-import {bookmark, download} from '../modules/action';
+import {bookmark, download, ReviewsData, AddReviews} from '../modules/action';
 import Icons from 'react-native-vector-icons/Ionicons';
 import Thumb from 'react-native-vector-icons/Entypo';
 import Tag from 'react-native-vector-icons/AntDesign';
 import User from 'react-native-vector-icons/Entypo';
+import database from '@react-native-firebase/database';
 // import Pdf from 'react-native-pdf';
+const array = [];
 const LineDivider = () => {
   return (
     <View style={{width: 1, paddingVertical: 5}}>
@@ -40,6 +48,11 @@ class Details extends Component {
     super(props);
     this.state = {
       like: false,
+      name: '',
+      review: '',
+      ismodalVisible: false,
+      bookid: '',
+      reviewArray: [],
     };
   }
   addBookMark = async (book) => {
@@ -57,10 +70,43 @@ class Details extends Component {
     const value = await AsyncStorage.getItem('Database');
     this.props.download(book, JSON.parse(value));
   };
+  componentDidMount() {
+    this.props.ReviewsData(this.props.route.params.item.id);
+  }
 
+  // componentDidUpdate(previousprops, previousstate) {
+  //   console.log('Hello');
+  //   if (
+  //     previousprops.route.params.item.id !== this.props.route.params.item.id
+  //   ) {
+  //     this.props.ReviewsData(this.props.route.params.item.id);
+  //   }
+  //   console.log(previousprops.route.params.item.id);
+  //   console.log(this.props.route.params.item.id);
+  // }
+
+  AddReview = (bookid) => {
+    const obj = {name: this.state.name, comment: this.state.review};
+    this.props.AddReviews(bookid, obj);
+    this.setState({
+      ismodalVisible: false,
+    });
+  };
+
+  ReviewStyling = ({item}) => {
+    return (
+      <View style={styles.reviewContainer}>
+        <View style={styles.innerReviewContainer}>
+          <Text>{item.name}</Text>
+        </View>
+        <View style={styles.innerReviewContainer}>
+          <Text>{item.comment}</Text>
+        </View>
+      </View>
+    );
+  };
   render() {
     const {item} = this.props.route.params;
-
     return (
       <>
         <SafeAreaView />
@@ -81,7 +127,7 @@ class Details extends Component {
                 }}>
                 <View>
                   <TouchableOpacity
-                    onPress={() => this.props.navigation.goBack()}>
+                    onPress={() => this.props.navigation.navigate('TabScreen')}>
                     <Icons
                       name={'arrow-back-circle-outline'}
                       size={40}
@@ -330,9 +376,58 @@ class Details extends Component {
                   NA
                 </Text>
               )}
+              <Text
+                style={[
+                  styles.heading,
+                  this.props.dark ? styles.darkheading : null,
+                ]}>
+                Review
+              </Text>
+              {/* <FlatList
+                key={'&'}
+                data={this.props.review}
+                renderItem={this.ReviewStyling}
+                keyExtractor={(dataitem, index) => dataitem + index}
+              /> */}
+              {this.props.review.map((item, index) => (
+                <View key={index} style={styles.mainReviewContainer}>
+                  <View style={styles.reviewContainer}>
+                    <Tag
+                      name={'user'}
+                      size={20}
+                      color={this.props.dark ? 'white' : 'purple'}
+                    />
+                    <Text
+                      style={[
+                        styles.reviewTxtName,
+                        this.props.dark ? styles.darkreviewTxtName : null,
+                      ]}>
+                      {item.name}
+                    </Text>
+                  </View>
+                  <View style={styles.innerReviewContainer}>
+                    <Text
+                      style={[
+                        styles.reviewTxt,
+                        this.props.dark ? styles.darkreviewTxt : null,
+                      ]}>
+                      {item.comment}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+              <View style={styles.reviewAddButton}>
+                <TouchableOpacity
+                  onPress={() => this.setState({ismodalVisible: true})}>
+                  <Tag
+                    name={'pluscircle'}
+                    size={40}
+                    color={this.props.dark ? 'white' : 'purple'}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </ScrollView>
-
           <View style={styles.buttonContainer}>
             {item.accessInfo.epub.acsTokenLink ? (
               <TouchableOpacity
@@ -406,6 +501,39 @@ class Details extends Component {
               </TouchableOpacity>
             ) : null}
           </View>
+
+          <Modal
+            style={styles.modal}
+            isVisible={this.state.ismodalVisible}
+            swipeDirection="down"
+            onBackdropPress={() => this.setState({ismodalVisible: false})}>
+            <KeyboardAvoidingView style={styles.Mcontainer}>
+              <Text style={styles.modalHeader}>Add Your Review</Text>
+              <ScrollView>
+                <TextInput
+                  style={styles.inputBox}
+                  // value={this.state.name}
+                  onChangeText={(name) => this.setState({name})}
+                  placeholder="Name"
+                  autoCapitalize="none"
+                />
+                <TextInput
+                  style={styles.inputBox}
+                  // value={this.state.review}
+                  onChangeText={(review) => this.setState({review})}
+                  placeholder="Your Review"
+                  autoCapitalize="none"
+                  multiline={true}
+                />
+                <Button
+                  title={'Confirm'}
+                  onPress={() => this.AddReview(item.id)}
+                />
+              </ScrollView>
+            </KeyboardAvoidingView>
+          </Modal>
+
+          {console.log('REDUCER REVIEW', this.props.review)}
         </View>
       </>
     );
@@ -415,11 +543,15 @@ const mapStateToProps = (state) => {
   return {
     bookList: state.bookmark,
     dark: state.darkScreen,
+    review: state.review,
+    // array: state.array,
   };
 };
 const mapDispatchToProps = (dispatch) => ({
   bookmark: (book, value) => dispatch(bookmark(book, value)),
   download: (book, value) => dispatch(download(book, value)),
+  ReviewsData: (bookid) => dispatch(ReviewsData(bookid)),
+  AddReviews: (bookid, data) => dispatch(AddReviews(bookid, data)),
 });
 export default connect(mapStateToProps, mapDispatchToProps)(Details);
 const styles = StyleSheet.create({
@@ -430,6 +562,21 @@ const styles = StyleSheet.create({
   darkcontainer: {
     flex: 1,
     backgroundColor: '#252726',
+  },
+  inputBox: {
+    width: '75%',
+    margin: 10,
+    padding: 10,
+    fontSize: 20,
+  },
+  modal: {
+    justifyContent: 'flex-end',
+  },
+  Mcontainer: {
+    height: 450,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    paddingTop: 20,
   },
   innerContainer: {
     width: windowWidth,
@@ -660,5 +807,46 @@ const styles = StyleSheet.create({
   },
   user: {
     marginLeft: 10,
+  },
+  reviewContainer: {
+    margin: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    //backgroundColor: 'red',
+  },
+  innerReviewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reviewTxt: {
+    fontSize: 18,
+    margin: 5,
+    fontWeight: '400',
+  },
+  reviewTxtName: {
+    fontSize: 20,
+    margin: 5,
+    fontWeight: '600',
+    color: 'black',
+  },
+  darkreviewTxtName: {
+    color: 'white',
+  },
+  darkreviewTxt: {
+    color: 'white',
+  },
+  reviewAddButton: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginRight: 20,
+  },
+  mainReviewContainer: {
+    width: '90%',
+  },
+  modalHeader: {
+    alignSelf: 'center',
+    fontSize: 25,
+    fontWeight: '700',
+    color: 'purple',
   },
 });
