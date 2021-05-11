@@ -2,3 +2,5 @@
 ReadSpace is an E-book platform for both Android and IOS users. It is fully written in Native javascript code and designing is done based on different screen sizes. Google book API is used to fetch data in JSON format. It has approximately millions of books of data available. Users can search for any type of book based on a book title, author name, or category. All books are divided into 20 different genres, users can select the genre to get their favourite genre books and sorting is done based on the latest release of books. Various filters are provided for users like Ebook, Free Ebook, Paid Ebook, Full Ebook, Partial Ebook. Users can Read samples, Preview, Buy, or download also they can give their reviews on a book, the users are also provided with a notes facility where they can write notes, update notes and delete notes. Firebase database is used for storing data and also Async Storage for storing data.
 
 ![Screen1](./src/assets/Screen1.gif)
+
+![Screen2](./src/assets/Screen2.gif)
