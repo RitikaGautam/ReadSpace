@@ -533,7 +533,7 @@ class Details extends Component {
             </KeyboardAvoidingView>
           </Modal>
 
-          {console.log('REDUCER REVIEW', this.props.review)}
+          {console.log('REDUCER REVIEW========>', this.props.review)}
         </View>
       </>
     );
