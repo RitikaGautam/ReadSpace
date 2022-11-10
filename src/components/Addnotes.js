@@ -125,7 +125,7 @@ class Addnotes extends Component {
                 <Back name={'arrow-back-sharp'} color={'white'} size={30} />
               </TouchableOpacity>
 
-              <Text style={styles.headerTxt}>Update Note</Text>
+              <Text style={styles.headerTxt}>Update Notes</Text>
             </View>
             <View style={styles.midContainer}>
               <View style={styles.input}>
